@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect #Flask micro python server
 app = Flask(__name__, template_folder='../Face_Attendance') #Server Declaration
-import lcddriver #Library LCD 
+# import lcddriver #Library LCD 
 
-display = lcddriver.Lcd()
-display.lcd_display_string("Welcome ", 1)
-display.lcd_display_string("Facial Attendance ", 2)
+# display = lcddriver.Lcd()
+# display.lcd_display_string("Welcome ", 1)
+# display.lcd_display_string("Facial Attendance ", 2)
 
 @app.route('/')
 def index():
@@ -17,7 +17,7 @@ def enroll():
     print(user)#vnc user name
     import cv2
     import os
-    import lcddriver
+    #import lcddriver
     import time
     import sys
     import pymysql
@@ -27,33 +27,33 @@ def enroll():
         password='sudo',
         db='attendance')
 
-    display = lcddriver.Lcd()
+    # display = lcddriver.Lcd()
 
     cam = cv2.VideoCapture(0)
     cam.set(3, 640)  # set video width
     cam.set(4, 480)  # set video height
-    display.lcd_display_string("Face Detection Started", 1)
+    # display.lcd_display_string("Face Detection Started", 1)
     face_detector = cv2.CascadeClassifier(
         'haarcascade_frontalface_default.xml')
 
     # For each person, enter one numeric face id
-    display.lcd_display_string("Your Usr ID: ", 1)
+    # display.lcd_display_string("Your Usr ID: ", 1)
     # face_id = input('\n enter user id end press <return> ==>  ')
     face_id = user
-    display.lcd_display_string(str(face_id), 2)
+    # display.lcd_display_string(str(face_id), 2)
     time.sleep(2)
     dirName = "dataset/" + str(face_id)
     if not os.path.exists(dirName):
         os.makedirs(dirName)
         print("User ID Created")
-        display.lcd_display_string("User ID Created ", 1)
+        # display.lcd_display_string("User ID Created ", 1)
     else:
         print("ID already exists")
-        display.lcd_display_string("User ID ", 1)
-        display.lcd_display_string("Already exists. ", 2)
+        # display.lcd_display_string("User ID ", 1)
+        # display.lcd_display_string("Already exists. ", 2)
         sys.exit()
     print("\n [INFO] Initializing face capture. Look the camera and wait ...")
-    display.lcd_display_string("Face Capturing ", 1)
+    # display.lcd_display_string("Face Capturing ", 1)
     # Initialize individual sampling face count:
     count = 0
 
@@ -67,8 +67,8 @@ def enroll():
         for (x, y, w, h) in faces:
             cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
             roi_color = img[y:y+h, x:x+w]
-            display.lcd_display_string("Face Detected : ", 1)
-            display.lcd_display_string(str(count+1) + " out of 30", 2)
+            # display.lcd_display_string("Face Detected : ", 1)
+            # display.lcd_display_string(str(count+1) + " out of 30", 2)
             count += 1
             # Save the captured image into the datasets folder
             fileName = dirName + "/" + face_id + str(count) + ".jpg"
@@ -97,9 +97,9 @@ def enroll():
 
     # Do a bit of cleanup
     time.sleep(2)
-    display.lcd_clear()
+    # display.lcd_clear()
     print("\n [INFO] Exiting Program and cleanup stuff")
-    display.lcd_display_string("Capture Success ", 1)
+    # display.lcd_display_string("Capture Success ", 1)
     cam.release()
     cv2.destroyAllWindows()
     trainning()
@@ -114,13 +114,13 @@ def attendance():
     import os
     import pymysql
     import pickle
-    import lcddriver
+    # import lcddriver
     import time
     from datetime import datetime
     
     date = datetime.now().strftime('%Y-%m-%d')
     timeout = time.time() + 60*5
-    display = lcddriver.Lcd()
+    # display = lcddriver.Lcd()
     # We load pickle file
     with open('labels', 'rb') as f:
         dicti = pickle.load(f)
@@ -131,7 +131,7 @@ def attendance():
         user='root',
         password='sudo',
         db='attendance')
-    display.lcd_display_string("Face Recognition Started ", 1)
+    # display.lcd_display_string("Face Recognition Started ", 1)
     recognizer = cv2.face.LBPHFaceRecognizer_create()
     recognizer.read('trainer/trainer.yml')
     cascadePath = "haarcascade_frontalface_default.xml"
@@ -206,7 +206,7 @@ def attendance():
             cursor.execute(sql3)
             # print(cursor.rowcount, "Total updated")
             # Commit your changes in the database
-            display.lcd_display_string(str(cursor.rowcount)+" Attended ", 2)
+            # display.lcd_display_string(str(cursor.rowcount)+" Attended ", 2)
             # print("Count Sucess")
             db.commit()
         except:
@@ -231,9 +231,9 @@ def trainning():#training pictures to algorithm
     from PIL import Image
     import cv2
     import pickle
-    import lcddriver
+    # import lcddriver
 
-    display = lcddriver.Lcd()
+    # display = lcddriver.Lcd()
     faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
     # Recognizer for face
@@ -248,7 +248,7 @@ def trainning():#training pictures to algorithm
     yLabels = []
     xTrain = []
     print("\n [INFO] Training faces. It will take a few seconds. Wait ...")
-    display.lcd_display_string("Training Faces...", 1)
+    # display.lcd_display_string("Training Faces...", 1)
     # Looking for images in directory
     for root, dirs, files in os.walk(imageDir):
         # print(root, dirs, files)
@@ -287,8 +287,7 @@ def trainning():#training pictures to algorithm
     recognizer.save("trainer/trainer.yml")
     print("\n [INFO] {0} faces trained. Exiting Program".format(
         len(np.unique(yLabels))))
-    display.lcd_display_string(
-        str(format(len(np.unique(yLabels)))) + " faces trained", 2)
+    # display.lcd_display_string(str(format(len(np.unique(yLabels)))) + " faces trained", 2)
     # print(labelIds[label])
 
 
