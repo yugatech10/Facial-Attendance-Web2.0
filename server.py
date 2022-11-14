@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, redirect #Flask micro python server
 app = Flask(__name__, template_folder='../Face_Attendance') #Server Declaration
 # import lcddriver #Library LCD 
-
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("8.8.8.8", 80))
+ip = s.getsockname()[0]
 # display = lcddriver.Lcd()
 # display.lcd_display_string("Welcome ", 1)
 # display.lcd_display_string("Facial Attendance ", 2)
@@ -103,7 +106,7 @@ def enroll():
     cam.release()
     cv2.destroyAllWindows()
     trainning()
-    return redirect("http://192.168.0.100/Face_Attendance/Student/Menu.php")
+    return redirect("http://"+ip+"/Face_Attendance/Face_Attendance/Student/Menu.php")
 
 @app.route('/attendance')#attendance taking
 def attendance():
@@ -222,7 +225,7 @@ def attendance():
     cam.release()
     db.close()
     cv2.destroyAllWindows()
-    return redirect("http://192.168.0.100/Face_Attendance/Lecturer/Menu.php")
+    return redirect("http://"+ip+"/Face_Attendance/Face_Attendance/Lecturer/Menu.php")
 
 
 def trainning():#training pictures to algorithm
